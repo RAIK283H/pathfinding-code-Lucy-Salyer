@@ -55,6 +55,7 @@ class Scoreboard:
             self.player_path_display.append(
                 (path_label, player))
             
+            # Formats the scoreboard
             nodes_visited_label = pyglet.text.Label("Nodes Visited:",
                                                         x=0,
                                                         y=0,
@@ -65,7 +66,7 @@ class Scoreboard:
 
     def update_elements_locations(self):
         self.distance_to_exit_label.x = config_data.window_width - self.stat_width
-        self.distance_to_exit_label.y = config_data.window_height - self.stat_height;
+        self.distance_to_exit_label.y = config_data.window_height - self.stat_height
         for index, (display_element, player) in enumerate(self.player_name_display):
             display_element.x = config_data.window_width - self.stat_width
             display_element.y = config_data.window_height - self.base_height_offset - self.stat_height * 2 - self.stat_height * (index * self.number_of_stats)
@@ -78,6 +79,7 @@ class Scoreboard:
         for index, (display_element, player) in enumerate(self.player_path_display):
             display_element.x = config_data.window_width - self.stat_width
             display_element.y = config_data.window_height - self.base_height_offset - self.stat_height * 5 - self.stat_height * (index * self.number_of_stats)
+            # Puts the stat on the scoreboard in the right place
         for index, (display_element, player) in enumerate(self.nodes_visited_display):
             display_element.x = config_data.window_width - self.stat_width
             display_element.y = config_data.window_height - self.base_height_offset - self.stat_height * 6 - self.stat_height * (index * self.number_of_stats)
@@ -113,8 +115,10 @@ class Scoreboard:
         for display_element, player_configuration_info in self.nodes_visited_display:
             for player_object in global_game_data.player_objects:
                 if player_object.player_config_data == player_configuration_info:
+                    # Grab data from player_object.py
                     display_element.text = "Nodes Visited " + str(int(player_object.nodes_visited))
 
+    # Update the scoreboard
     def update_scoreboard(self):
         self.update_elements_locations()
         self.update_paths()

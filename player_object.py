@@ -18,6 +18,7 @@ class Player:
         self.sprite = pyglet.sprite.Sprite(img=self.player_image, x=0, y=0, batch=batch, group=group)
         self.player_config_data = player_config_data
         self.distance_traveled = 0
+        # When player is defined there are no nodes visited
         self.nodes_visited = 0
 
     def update_location(self, x, y):
@@ -29,6 +30,7 @@ class Player:
         self.absolute_x = graph_data.graph_data[global_game_data.current_graph_index][0][0][0]
         self.absolute_y = graph_data.graph_data[global_game_data.current_graph_index][0][0][1]
         self.distance_traveled = 0
+        # When player is reset there are no nodes visited
         self.nodes_visited = 0
 
     def update(self, dt):
@@ -82,4 +84,5 @@ class Player:
         self.distance_traveled = self.distance_traveled + math.sqrt(math.pow(last_absolute_x-self.absolute_x, 2) + math.pow(last_absolute_y-self.absolute_y, 2))
         self.sprite.visible = (global_game_data.current_player_index == self.player_index)
         self.update_location(self.absolute_x, self.absolute_y)
+        # adds the nodes.
         self.nodes_visited = self.current_objective
