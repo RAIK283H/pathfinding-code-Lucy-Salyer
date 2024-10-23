@@ -54,12 +54,135 @@ def get_random_path():
 
 
 def get_dfs_path():
-    return [1,2]
+    # Get the graph that is being run
+    curr_graph = graph_data.graph_data[global_game_data.current_graph_index]
+    assert len(curr_graph) >= 2, "The graph is null or not big enough to generate a path"
+    # Find the target node
+    target = global_game_data.target_node[global_game_data.current_graph_index]
+    # find the end node
+    end_node = len(curr_graph) - 1
+    start_node = 0
+    path = []
+
+    # Queue for cells that have not been explored
+    frontier = []
+    frontier.append(start_node)
+
+    # Set to hold visited nodes
+    visited = set()
+    visited.add(start_node)
+
+    # Map of parents
+    parents = {}
+    parents[start_node] = False
+
+    # Depth First Search for target
+    while frontier:
+        # Get next element in the list
+        current = frontier.pop()
+
+        # Break when the target is found
+        if (current == target):
+            break
+        # Add neighbors to be searched
+        neighbors = curr_graph[current][1]
+        for neighbor in neighbors:
+            if neighbor not in visited:
+                path.append(current)
+                visited.add(neighbor)
+                parents[neighbor] = current
+                frontier.append(neighbor)
+    
+    path.append(target)
+    frontier.append(target)
+    visited = set()
+    visited.add(target)
+    parents = {}
+    parents[target] = False
+
+    # Depth First Search for end node
+    while frontier:
+        current = frontier.pop()
+
+        # Break when end node is found
+        if (current == end_node):
+            break
+        
+        neighbors = curr_graph[current][1]
+        for neighbor in neighbors:
+            if neighbor not in visited:
+                path.append(current)
+                visited.add(neighbor)
+                parents[neighbor] = current
+                frontier.append(neighbor)
+  
+    return path
 
 
 def get_bfs_path():
-    return [1,2]
+    # Get the graph that is being run
+    curr_graph = graph_data.graph_data[global_game_data.current_graph_index]
+    assert len(curr_graph) >= 2, "The graph is null or not big enough to generate a path"
+    # Find the target node
+    target = global_game_data.target_node[global_game_data.current_graph_index]
+    # find the end node
+    end_node = len(curr_graph) - 1
+    start_node = 0
+    path = []
 
+    # Queue for cells that have not been explored
+    frontier = []
+    frontier.append(start_node)
+
+    # Set to hold visited nodes
+    visited = set()
+    visited.add(start_node)
+
+    # Map of parents
+    parents = {}
+    parents[start_node] = False
+
+    # Breadth First Search for target
+    while frontier:
+        # Get next element in the list
+        current = frontier.pop(0)
+
+        # Break when the target is found
+        if (current == target):
+            break
+        # Add neighbors to be searched
+        neighbors = curr_graph[current][1]
+        for neighbor in neighbors:
+            if neighbor not in visited:
+                path.append(current)
+                visited.add(neighbor)
+                parents[neighbor] = current
+                frontier.append(neighbor)
+    
+    path.append(target)
+    frontier.append(target)
+    visited = set()
+    visited.add(target)
+    parents = {}
+    parents[target] = False
+
+    # Breadth First Search for end node
+    while frontier:
+        current = frontier.pop(0)
+
+        # Break when end node is found
+        if (current == end_node):
+            break
+        
+        neighbors = curr_graph[current][1]
+        for neighbor in neighbors:
+            if neighbor not in visited:
+                path.append(current)
+                visited.add(neighbor)
+                parents[neighbor] = current
+                frontier.append(neighbor)
+  
+    return path
 
 def get_dijkstra_path():
     return [1,2]
