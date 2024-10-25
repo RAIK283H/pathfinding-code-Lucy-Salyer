@@ -14,6 +14,7 @@ class Scoreboard:
     nodes_visited_display = []
     nodes_visited = []
 
+
     def __init__(self, batch, group):
         self.batch = batch
         self.group = group
@@ -23,6 +24,8 @@ class Scoreboard:
         self.base_height_offset = 20
         self.font_size = 16
         self.distance_to_exit_label = pyglet.text.Label('Direct Distance To Exit : 0', x=0, y=0,
+                                                        font_name='Arial', font_size=self.font_size, batch=batch, group=group)
+        self.winner_label = pyglet.text.Label('Winner : TBD', x=0, y=0,
                                                         font_name='Arial', font_size=self.font_size, batch=batch, group=group)
         self.distance_to_exit = 0
         for index, player in enumerate(config_data.player_data):
@@ -67,6 +70,9 @@ class Scoreboard:
     def update_elements_locations(self):
         self.distance_to_exit_label.x = config_data.window_width - self.stat_width
         self.distance_to_exit_label.y = config_data.window_height - self.stat_height
+        # Puts winner on the scoreboard
+        self.winner_label.x = config_data.window_width - self.stat_width
+        self.winner_label.y = config_data.window_height - self.base_height_offset - self.stat_height
         for index, (display_element, player) in enumerate(self.player_name_display):
             display_element.x = config_data.window_width - self.stat_width
             display_element.y = config_data.window_height - self.base_height_offset - self.stat_height * 2 - self.stat_height * (index * self.number_of_stats)
@@ -96,6 +102,22 @@ class Scoreboard:
         self.distance_to_exit = math.sqrt(pow(start_x - end_x, 2) + pow(start_y - end_y, 2))
         self.distance_to_exit_label.text = 'Direct Distance To Exit : ' + "{0:.0f}".format(self.distance_to_exit)
 
+    def update_winner(self):
+        winner = global_game_data.player_objects[0]
+        for player_object in global_game_data.player_objects:
+            if player_object.distance_traveled < winner.distance_traveled:
+                winner = player_object
+        if (winner == global_game_data.player_objects[0]):
+            self.winner_label.text = 'Winner: Test'
+        elif (winner == global_game_data.player_objects[1]):
+            self.winner_label.text = 'Winner: Random'
+        elif (winner == global_game_data.player_objects[2]):
+            self.winner_label.text = 'Winner: DFS'
+        elif (winner == global_game_data.player_objects[3]):
+            self.winner_label.text = 'Winner: BFS'
+        elif (winner == global_game_data.player_objects[4]):
+            self.winner_label.text = 'Winner: Dijkstra'
+                
     def wrap_text(self, input):
         wrapped_text = (input[:44] + ', ...]') if len(input) > 44 else input
         return wrapped_text
@@ -125,3 +147,4 @@ class Scoreboard:
         self.update_distance_to_exit()
         self.update_distance_traveled()
         self.update_nodes_visited()
+        self.update_winner()
