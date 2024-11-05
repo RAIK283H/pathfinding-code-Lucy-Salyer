@@ -4,7 +4,6 @@ import global_game_data
 import pathing
 import graph_data
 
-
 class TestPathFinding(unittest.TestCase):
 
     def test_upper(self):
@@ -65,6 +64,7 @@ class TestPathFinding(unittest.TestCase):
 
         bad = [0, 3, 1, 2]
         self.assertNotEqual(path, bad)
+
 
 
 if __name__ == '__main__':
