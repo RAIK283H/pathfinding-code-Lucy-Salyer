@@ -32,7 +32,7 @@ class TestPathFinding(unittest.TestCase):
        global_game_data.current_player_index = 0
        path = pathing.get_dfs_path()
 
-       expected = [0, 4, 8, 12, 13, 14, 14, 15]
+       expected = [0, 4, 8, 12, 13, 14, 15]
        self.assertEqual(path, expected)
 
     def test_dfs_bad(self): 
@@ -52,7 +52,7 @@ class TestPathFinding(unittest.TestCase):
         global_game_data.current_player_index = 0
         path = pathing.get_bfs_path()
 
-        expected = [0, 1, 2, 6, 10, 14, 14, 15]
+        expected = [0, 1, 2, 6, 10, 14, 15]
         self.assertEqual(path, expected)
 
     def test_bfs_bad(self): 
@@ -63,6 +63,26 @@ class TestPathFinding(unittest.TestCase):
         path = pathing.get_bfs_path()
 
         bad = [0, 3, 1, 2]
+        self.assertNotEqual(path, bad)
+
+    def test_dijkstra_happy(self):
+        self.graphs = graph_data.graph_data
+        global_game_data.current_graph_index = 10
+        global_game_data.target_node = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3]
+        global_game_data.current_player_index = 0
+        path = pathing.get_dijkstra_path()
+
+        expected = [0, 1, 3, 4]
+        self.assertEqual(path, expected)
+
+    def test_dijkstra_bad(self): 
+        self.graphs = graph_data.graph_data
+        global_game_data.current_graph_index = 2
+        global_game_data.target_node = [0, 0, 20]
+        global_game_data.current_player_index = 0
+        path = pathing.get_dijkstra_path()
+
+        bad = [0, 22, 20, 1, 19, 21, 23]
         self.assertNotEqual(path, bad)
 
 

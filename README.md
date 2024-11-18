@@ -3,3 +3,5 @@ My random path gets all of the important nodes like target, current, and end. I 
 
 I added a statistic that tracks how many nodes are visited each run through a graph. This is implemented in scoreboard.py and player_object.py. 
 
+# I did the extra credit homework 6!
+I used a heap in Dijkstra's

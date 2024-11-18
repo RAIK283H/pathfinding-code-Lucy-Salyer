@@ -1,6 +1,10 @@
 import graph_data
 import global_game_data
 from numpy import random
+import sys
+import heapq as heap
+import math
+
 
 def set_current_graph_paths():
     global_game_data.graph_paths.clear()
@@ -65,13 +69,15 @@ def get_dfs_path():
     
     path_to_target = build_dfs_path(curr_graph, start_node, target)
     path_to_end = build_dfs_path(curr_graph, target, end_node)
+    path_to_end.pop(0)
     
     path = path_to_target + path_to_end
 
+
     assert target in path, "Target was not in the path DFS"
     assert end_node in path, "End node was not in the path DFS"
-    # for i in range(len(path) - 2):
-    #     assert path[i + 1] in curr_graph[path[i]][1], "Not all the paths are connected with an edge DFS"
+    assert validate_path(curr_graph, path), "Path is not valid because nodes are not connected by edges DFS"
+
     return path
 
 def build_dfs_path(graph, start_node, end_node):
@@ -124,13 +130,14 @@ def get_bfs_path():
     
     path_to_target = build_bfs_path(curr_graph, start_node, target)
     path_to_end = build_bfs_path(curr_graph, target, end_node)
+    path_to_end.pop(0)
     
     path = path_to_target + path_to_end
 
     assert target in path, "Target was not in the path BFS"
-    assert end_node in path, "End node was not in the path BFS"
-    # for i in range(len(path) - 1):
-    #     assert path[i + 1] in curr_graph[path[i]][1], "Not all the paths are connected with a node BFS"
+    assert end_node in path, "End node was not in the path BFS"   
+    assert validate_path(curr_graph, path), "Path is not valid because nodes are not connected by edges BFS"
+
 
     return path
 
@@ -173,4 +180,97 @@ def build_bfs_path(graph, start_node, end_node):
     return path
 
 def get_dijkstra_path():
-    return [1,2]
+   # Get the graph that is being run
+    curr_graph = graph_data.graph_data[global_game_data.current_graph_index]
+    assert len(curr_graph) >= 2, "The graph is null or not big enough to generate a path"
+    # Find the target node
+    target = Node(global_game_data.target_node[global_game_data.current_graph_index])
+    # find the end node
+    end_node = Node(len(curr_graph) - 1)
+    start_node = Node(0)
+
+    path_to_target = build_dijkstra(start_node, target, curr_graph)
+    path_to_end = build_dijkstra(target, end_node, curr_graph)
+    # Both add the target node so you need to cut one out
+    path_to_end.pop(0)
+
+    path = path_to_target + path_to_end
+
+    assert start_node.node_number == path[0], "Start node was not in the path Dijkstra"
+    assert end_node.node_number == path[len(path) - 1], "End node was not in the path Dijkstra"
+    assert validate_path(curr_graph, path), "Path is not valid because nodes are not connected by edges Dijkstra"
+
+    return path
+
+
+def build_dijkstra(start_node, end_node, graph):
+    path = []
+    
+    # Create a heap to hold priorities
+    frontier = []
+    heap.heapify(frontier)
+    heap.heappush(frontier, (start_node.priority, start_node))
+
+    # Create a set to hold who is visited
+    visited = set()
+    visited.add(start_node)
+
+    # A map to hold parents
+    parents = {}
+    parents[start_node] = False
+
+    curr_dist = 0
+
+    while frontier:
+        # Get first node
+        current = heap.heappop(frontier)[1]
+
+        # If you are at the searched for node break
+        if(current.node_number == end_node.node_number): 
+            break
+
+        # Add neighbors to be searched
+        neighbors = graph[current.node_number][1]
+        for neighbor in neighbors:
+            # Make each node apart of the node class to hold a priority
+            node = Node(neighbor)
+            if node not in visited:
+                visited.add(node)
+                parents[node] = current
+                # Use pythagorean theorem to calculate distance
+                node.priority = curr_dist + math.sqrt(math.pow(graph[current.node_number][0][0] - graph[node.node_number][0][0], 2) 
+                + math.pow(graph[current.node_number][0][1] - graph[node.node_number][0][1], 2))
+                heap.heappush(frontier, (node.priority, node))
+
+    # Build path backward
+    while current is not False:
+        path.insert(0, current.node_number)
+        current = parents[current]
+
+    return path
+
+def validate_path(graph, path):
+    is_valid = False
+    for index, node in enumerate(path):
+        if(index != len(path)-1):
+            is_valid = path[index+1] in graph[node][1]
+            if(is_valid == False):
+                return False
+    return is_valid
+
+
+class Node:
+    def __init__(self, node_number):
+        self.node_number = node_number
+        self.priority = sys.maxsize
+
+    # custom comparator needed for breaking ties in heapq
+    def __lt__(self, other):  
+        return self.priority < other.priority
+    
+    def __hash__(self):
+        return hash(self.node_number)
+
+    def __eq__(self, other):
+        return isinstance(other, Node) and self.node_number == other.node_number
+
